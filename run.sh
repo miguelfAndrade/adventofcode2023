@@ -1,6 +1,5 @@
 #!/bin/bash
 
-path=$(pwd)
-file="$path/$1/main.cpp"
-g++ $file
-./a.out
+cd $1
+g++ -std=c++0x main.cpp -o main.o
+./main.o

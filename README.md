@@ -2,6 +2,6 @@
 
 ## Compile and Run Code
 
-Run the the `run.sh` script with the specific day.
+Run the `run.sh` script with the specific day.
 
-Example - `sh run.sh day1`
+Example: `sh run.sh day1`
