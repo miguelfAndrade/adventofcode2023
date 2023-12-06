@@ -1,11 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 int processLine(std::string line, int lineNumber);
-std::string convertStringToNumber(std::string nS);
-
-int biggestNumberWord = 5;
+std::string convertStringToNumber(std::string nS, int i, int rl);
 
 int main() {
     int sum = 0;
@@ -30,42 +29,62 @@ int main() {
     return 0;
 }
 
-std::string convertStringToNumber(std::string nS) {
+std::string convertStringToNumber(std::string nS, int i, int rl) {
     std::string n = "";
-    // std::cout << nS << std::endl;
-    if(nS.find("one")  != std::string::npos)
+    
+    int i3 = i;
+    int i4 = i;
+    int i5 = i;
+    int width3 = 3;
+    int width4 = 4;
+    int width5 = 5;
+    
+    if(rl) {
+        i3 = (i-2);
+        i4 = (i-3);
+        i5 = (i-4);
+        if (i3 < 0) i3 = 0;
+        if (i4 < 0) i4 = 0;
+        if (i5 < 0) i5 = 0;
+    }
+    
+    if (i3 + width3 > nS.length()) width3 = nS.length() - i3;
+    if (i4 + width4 > nS.length()) width4 = nS.length() - i4 - 1;
+    if (i5 + width5 > nS.length()) width5 = nS.length() - i5 - 2;
+
+    if(nS.substr(i3, width3) == "one")
     {
         n = "1";
     }
-    else if(nS.find("two")  != std::string::npos)
+    else if(nS.substr(i3, width3) == "two")
     {
         n = "2";
     }
-    else if(nS.find("three")  != std::string::npos)
+    else if(nS.substr(i5, width5) == "three")
     {
         n = "3";
     }
-    else if(nS.find("four")  != std::string::npos)
+    else if(nS.substr(i4, width4) == "four")
     {
         n = "4";
     }
-    else if(nS.find("five")  != std::string::npos)
+    else if(nS.substr(i4, width4) == "five")
     {
         n = "5";
     }
-    else if(nS.find("six")  != std::string::npos)
+    else if(nS.substr(i3, width3) == "six")
     {
         n = "6";
     }
-    else if(nS.find("seven")  != std::string::npos)
+    else if(nS.substr(i5, width5) == "seven")
     {
         n = "7";
     }
-    else if(nS.find("eight")  != std::string::npos)
+    else if(nS.substr(i5, width5) == "eight")
     {
         n = "8";
     }
-    else if(nS.find("nine")  != std::string::npos)
+    else if(nS.substr(i4, width4) == "nine")
     {
         n = "9";
     }
@@ -77,35 +96,25 @@ int processLine(std::string line, int lineNumber) {
     int i = 0;
     int j = line.length()-1;
     std::string n = "";
-    int upperLimit = i + biggestNumberWord;
-    int lowerLimit = j - biggestNumberWord;
     while(i < line.length()) {
-        upperLimit = biggestNumberWord;   
-        if(i+biggestNumberWord >= line.length()-1) {
-            upperLimit = line.length()-1;
-        }
         if (std::isdigit(line[i])) {
             n = line[i];
             break;
         }   
-        if (convertStringToNumber(line.substr(i,upperLimit)) != "") {
-            n = convertStringToNumber(line.substr(i,upperLimit));
+        n = convertStringToNumber(line, i, 0);
+        if (n != "") {
             break;
         }
         i++;    
     }
 
     while(j >= 0) {
-        lowerLimit = j-biggestNumberWord+1;
-        if(lowerLimit <= 0) {
-            lowerLimit = 0;
-        }
         if (std::isdigit(line[j])) {
             n += line[j];
             break;
         }
-        if (convertStringToNumber(line.substr(lowerLimit, biggestNumberWord)) != "") {
-            n += convertStringToNumber(line.substr(lowerLimit, biggestNumberWord));
+        if (convertStringToNumber(line, j, 1) != "") {
+            n += convertStringToNumber(line, j, 1);
             break;
         }
         j--; 
