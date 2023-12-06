@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
 
 int processLine(std::string line, int lineNumber);
 std::string convertStringToNumber(std::string nS, int i, int rl);
@@ -31,7 +30,7 @@ int main() {
 
 std::string convertStringToNumber(std::string nS, int i, int rl) {
     std::string n = "";
-    
+
     int i3 = i;
     int i4 = i;
     int i5 = i;
