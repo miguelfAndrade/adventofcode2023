@@ -5,6 +5,9 @@
 #include <iterator>
 
 int getSum(std::vector<std::string> data);
+int getNumber(std::string line, int i, int& newI);
+int verifyUpBelow(std::string line, int pos);
+int verifyLR(std::string line, int pos);
 
 int main() {
     int sum = 0;
@@ -38,12 +41,24 @@ int getSum(std::vector<std::string> data) {
     for (std::vector<std::string>::iterator it = data.begin() ; it != data.end(); ++it)
     {
         std::string st = *it;
-        for(int i = 0; i != st.length(); ++i)
-        {
-            if(st[i] != '.' && !std::isdigit(st[i]))
-            {
+        // std::cout << st << std::endl;
+        std::string prevSt = *std::prev(it);
+        std::string nextSt = "";
+        if(it == data.end()) nextSt = *std::next(it);
+        else 
 
+        std::cout << st << std::endl;
+        for(int i = 0; i < st.length(); ++i)
+        {
+            int newI = i;
+            if(st[i] != '.' && std::isdigit(st[i]))
+            {
+                if(verifyUpBelow(nextSt, i) || verifyUpBelow(prevSt, i) || verifyLR(st, i-1) || verifyLR(st, i+1))
+                {
+                    sum += getNumber(st, i, newI);
+                }
             }
+            i = newI;
         }
 
     }
@@ -51,39 +66,75 @@ int getSum(std::vector<std::string> data) {
     return sum;
 }
 
-int getNumber(std::string line, int i) {
+int getNumber(std::string line, int i, int& newI) {
     int number = 0;
-    int left = i-3;
-    int right = i+3;
+    int cursorL = i;
+    int cursorR = i;
+    int left = i;
+    int right = i;
 
-    if(i=0)
+    int tries = 0;
+
+    while(tries < (line.length()/2))
     {
-        return std::stoi(line.substr(i, right));
+        if(cursorL <= 0)
+        {
+            cursorL = 0;
+        }
+        if(cursorR >= line.length())
+        {
+            cursorR = line.length()-1;
+        }
+        
+        
+        if(std::isdigit(line[cursorL]))
+        {
+            left = cursorL;
+        }
+        if(std::isdigit(line[cursorR]))
+        {
+            right = cursorR+1;
+        }
+        if(!std::isdigit(line[cursorL]) && !std::isdigit(line[cursorR])) 
+        {
+            number = std::stoi(line.substr(left, right-left));
+            newI = right;
+            break;
+        }
+
+        --cursorL;
+        ++cursorR;
+        ++tries;
     }
-    if(i=line.length()-1)
-    {
+    std::cout << "NUMBER: " << number << " i=" << i << std::endl;
 
-        return std::stoi(line.substr(left, i));
-    }
 
-    // while()
-    // {
+    return number;
+}
 
-    // }
+int verifyLR(std::string line, int pos) {
+    int i = pos;
+    if(i < 0) i = 0;
+    if(i >= line.length()) i = line.length()-1;
+    if(line[i] != '.' && !std::isdigit(line[i])) return 1;
+
+    return 0;
 }
 
 int verifyUpBelow(std::string line, int pos) {
+    if(line == "") return 0;
     int i = pos-1;
     int length = pos+1;
     if(i < 0) i = 0;
     if(length > line.length()) length = line.length();
     while(i<length)
     {
-        if(std::isdigit(line[i]))
+        if(line[i] != '.' && !std::isdigit(line[i]))
         {
-            return getNumber(line.substr(), i);
+            return 1;
         }
         ++i;
     }
+    return 0;
 }
 
