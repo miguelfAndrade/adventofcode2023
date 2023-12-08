@@ -14,6 +14,7 @@ int main() {
 
     std::string line;
     std::ifstream myfile ("input.txt");
+    // std::ifstream myfile ("i.txt");
 
     std::vector<std::string> schem;
 
@@ -44,13 +45,12 @@ int getSum(std::vector<std::string> data) {
         // std::cout << st << std::endl;
         std::string prevSt = *std::prev(it);
         std::string nextSt = "";
-        if(it == data.end()) nextSt = *std::next(it);
-        else 
+        if(it != std::prev(data.end())) nextSt = *std::next(it);
 
-        std::cout << st << std::endl;
         for(int i = 0; i < st.length(); ++i)
         {
             int newI = i;
+            char s = st[i];
             if(st[i] != '.' && std::isdigit(st[i]))
             {
                 if(verifyUpBelow(nextSt, i) || verifyUpBelow(prevSt, i) || verifyLR(st, i-1) || verifyLR(st, i+1))
@@ -77,23 +77,17 @@ int getNumber(std::string line, int i, int& newI) {
 
     while(tries < (line.length()/2))
     {
-        if(cursorL <= 0)
-        {
-            cursorL = 0;
-        }
-        if(cursorR >= line.length())
-        {
-            cursorR = line.length()-1;
-        }
-        
-        
         if(std::isdigit(line[cursorL]))
         {
             left = cursorL;
+            --cursorL;
+            if(cursorL <= 0) cursorL = 0;
         }
         if(std::isdigit(line[cursorR]))
         {
             right = cursorR+1;
+            ++cursorR;
+            if(cursorR >= line.length()) cursorR = line.length()-1;
         }
         if(!std::isdigit(line[cursorL]) && !std::isdigit(line[cursorR])) 
         {
@@ -101,12 +95,13 @@ int getNumber(std::string line, int i, int& newI) {
             newI = right;
             break;
         }
-
-        --cursorL;
-        ++cursorR;
         ++tries;
     }
-    std::cout << "NUMBER: " << number << " i=" << i << std::endl;
+
+    number = std::stoi(line.substr(left, right-left));
+    newI = right;
+
+    // std::cout << "NUMBER: " << number << " i=" << i << std::endl;
 
 
     return number;
@@ -124,7 +119,7 @@ int verifyLR(std::string line, int pos) {
 int verifyUpBelow(std::string line, int pos) {
     if(line == "") return 0;
     int i = pos-1;
-    int length = pos+1;
+    int length = pos+2;
     if(i < 0) i = 0;
     if(length > line.length()) length = line.length();
     while(i<length)
