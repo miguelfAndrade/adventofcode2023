@@ -3,50 +3,62 @@
 #include <string>
 #include <vector>
 
+#define SIZE 6
 
 int getPoints(std::string st);
 int getDigit(std::string st, int pos, int& newPos);
-int getScratchNumber(std::string st, std::vector<int>& cards, int nLine);
 
 int main() {
     int sum = 0;
-    std::vector<int> cards(201, 0);
-    int countLines = 0;
+    int p = 0;
+    int c = 0;
+    int n = 0;
+    std::vector<int> cards(SIZE, 1);
 
     std::string line;
-    std::ifstream myfile ("input.txt");
-    // std::ifstream myfile ("i.txt");
+    // std::ifstream myfile ("input.txt");
+    std::ifstream myfile ("i.txt");
+
 
     if (myfile.is_open())
     {
-        while (std::getline(myfile, line))
-        {
-            countLines++;
-            std::cout << line << std::endl; 
-            getScratchNumber(line, cards, countLines);
+        while (std::getline(myfile, line) )
+        { 
+            p = getPoints(line);
+            if(p != 0)
+            {
+                n = c + p;
+                if(c > SIZE-1) c = SIZE-1;
+                if(n > SIZE-1) n = SIZE;
+                for(int i=c; i<n; ++i) {
+                    int n2 = cards[i-1]+c;
+                    if(n2 > SIZE-1) n2 = SIZE-1;
+                    if(cards[i-1] > 1) {
+                        for(int j=c+1; j<n2; ++j) {
+                            cards[j]++;
+                        }
+                    }
+                    else {
+                        if(i == n-1) i = n-1;
+                        cards[i+1]++;
+                    }
+                }
+            }
+            c++;
         }
-        
         myfile.close();
+
     }
     else std::cout << "Unable to open file" << std::endl; 
 
     for(std::vector<int>::iterator it = cards.begin(); it != cards.end(); ++it) {
         sum += *it;
+        std::cout << *it << std::endl;
     }
+
     
     std::cout << "SUM RESULT: " << sum << std::endl; 
     
-    return 0;
-}
-
-int getScratchNumber(std::string st, std::vector<int>& cards, int nLine) {
-    // std::cout << "LINE: " << st << std::endl; 
-    int n = getPoints(st);
-    int length = nLine + n;
-    for(int i=nLine; i<=length; ++i) {
-        cards[i]++;
-    }
-
     return 0;
 }
 
@@ -73,12 +85,8 @@ int getPoints(std::string st) {
         for(int j=0; j<nHave.length(); ++j) {
             int nJ = getDigit(nHave, j, j);
             if(nI == nJ) {
-                if(n == 0) {
-                    n++;
-                }
-                else if(n > 0) {
-                    n = n*2;
-                }
+                n++;
+                // continue;
             }
         }  
     }
@@ -95,3 +103,4 @@ int getDigit(std::string st, int pos, int& newPos) {
     // std::cout << l << std::endl;
     return std::stoi(l);
 }
+
