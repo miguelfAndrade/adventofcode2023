@@ -3,47 +3,43 @@
 #include <string>
 #include <vector>
 
-#define SIZE 6
+#define SIZE 201
+// #define SIZE 6
 
 int getPoints(std::string st);
 int getDigit(std::string st, int pos, int& newPos);
 
 int main() {
-    int sum = 0;
-    int p = 0;
-    int c = 0;
-    int n = 0;
+    int sum = 1;
+    int cp = 0;
+    int count = 0;
     std::vector<int> cards(SIZE, 1);
+    int copies[SIZE];
 
     std::string line;
-    // std::ifstream myfile ("input.txt");
-    std::ifstream myfile ("i.txt");
+    std::ifstream myfile ("input.txt");
+    // std::ifstream myfile ("i.txt");
 
 
     if (myfile.is_open())
     {
         while (std::getline(myfile, line) )
         { 
-            p = getPoints(line);
-            c++;
-            if(p != 0)
+            int n = 0;
+            cp = getPoints(line);
+            copies[count] = cp;
+            count++;
+            if(cp != 0)
             {
-                n = c + p;
-                if(c > SIZE-1) c = SIZE-1;
-                if(n > SIZE-1) n = SIZE;
-                for(int i=c; i<n; ++i) {
-                    int n2 = cards[c-1]+c;
-                    if(n2 > SIZE-1) n2 = SIZE-1;
-                    for(int j=c-1; j<n2; ++j) {
-                        cards[j]++;
-                    }
-                    // if(cards[c-1] > 1) {
-                    // }
-                    // else {
-                    //     if(i == n-1) i = n-1;
-                    //     cards[i]++;
-                    // }
+                int i = count;
+                if(i > SIZE-1) i = SIZE - 1;
+                n = i + cp;
+                if(n > SIZE) n = SIZE;
+                for(i; i<n; ++i) {
+                    cards[i]++;
                 }
+                // std::cout << cards[i] << std::endl;
+
             }
         }
         myfile.close();
@@ -51,9 +47,20 @@ int main() {
     }
     else std::cout << "Unable to open file" << std::endl; 
 
-    for(std::vector<int>::iterator it = cards.begin(); it != cards.end(); ++it) {
-        sum += *it;
-        std::cout << *it << std::endl;
+    for(int i=1; i<SIZE; ++i) {
+        std::cout << cards[i] << std::endl;
+        if(copies[i] != 0)
+        {
+            int j = i+1;
+            int n = j+copies[i];
+            if(j>SIZE) j=SIZE-1;
+            if(n > SIZE) n = SIZE;
+            for(j; j<n; ++j) {
+                cards[j] += (cards[i]-1);
+            }
+        }
+        // std::cout << cards[i] << std::endl;
+        sum += cards[i];
     }
 
     
@@ -86,7 +93,6 @@ int getPoints(std::string st) {
             int nJ = getDigit(nHave, j, j);
             if(nI == nJ) {
                 n++;
-                // continue;
             }
         }  
     }
