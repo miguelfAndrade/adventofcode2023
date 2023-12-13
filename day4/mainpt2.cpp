@@ -25,26 +25,26 @@ int main() {
         while (std::getline(myfile, line) )
         { 
             p = getPoints(line);
+            c++;
             if(p != 0)
             {
                 n = c + p;
                 if(c > SIZE-1) c = SIZE-1;
                 if(n > SIZE-1) n = SIZE;
                 for(int i=c; i<n; ++i) {
-                    int n2 = cards[i-1]+c;
+                    int n2 = cards[c-1]+c;
                     if(n2 > SIZE-1) n2 = SIZE-1;
-                    if(cards[i-1] > 1) {
-                        for(int j=c+1; j<n2; ++j) {
-                            cards[j]++;
-                        }
+                    for(int j=c-1; j<n2; ++j) {
+                        cards[j]++;
                     }
-                    else {
-                        if(i == n-1) i = n-1;
-                        cards[i+1]++;
-                    }
+                    // if(cards[c-1] > 1) {
+                    // }
+                    // else {
+                    //     if(i == n-1) i = n-1;
+                    //     cards[i]++;
+                    // }
                 }
             }
-            c++;
         }
         myfile.close();
 
