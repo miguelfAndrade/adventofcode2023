@@ -2,23 +2,24 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <algorithm>
+#include <cmath>
 #include <sstream>
 
-// int converter(std::string st, int seed);
+long int converter(long int seed, std::vector<std::vector<long int>> list);
+void getNumbers(std::string line, std::vector<long int>& numbers);
 int getSeeds(std::string st, std::vector<long int>& seeds);
 long int getDigit(std::string st, int pos, int& newPos);
 
 int main() {
-    long int n = 0;
+    long int n = 1000000000000;
     std::vector<long int> seeds;
-    std::vector<std::string> seedToSoil;
-    std::vector<std::string> soilToFert;
-    std::vector<std::string> fertToWater;
-    std::vector<std::string> waterToLight;
-    std::vector<std::string> ligthToTemp;
-    std::vector<std::string> tempToHum;
-    std::vector<std::string> humToLocation;
+    std::vector<std::vector<long int>> seedToSoil;
+    std::vector<std::vector<long int>> soilToFert;
+    std::vector<std::vector<long int>> fertToWater;
+    std::vector<std::vector<long int>> waterToLight;
+    std::vector<std::vector<long int>> ligthToTemp;
+    std::vector<std::vector<long int>> tempToHum;
+    std::vector<std::vector<long int>> humToLocation;
 
     int counter = 0;
 
@@ -31,31 +32,39 @@ int main() {
     {
         while (std::getline(myfile, line) )
         { 
+            std::vector<long int> tmp;
             getSeeds(line, seeds);
             if(std::isdigit(line[0]))
             {
                 switch (counter)
                 {
                 case 1:
-                    seedToSoil.push_back(line);
+                    getNumbers(line, tmp);
+                    seedToSoil.push_back(tmp);
                     break;
                 case 2:
-                    soilToFert.push_back(line);
+                    getNumbers(line, tmp);
+                    soilToFert.push_back(tmp);
                     break;
                 case 3:
-                    fertToWater.push_back(line);
+                    getNumbers(line, tmp);
+                    fertToWater.push_back(tmp);
                     break;
                 case 4:
-                    waterToLight.push_back(line);
+                    getNumbers(line, tmp);
+                    waterToLight.push_back(tmp);
                     break;
                 case 5:
-                    ligthToTemp.push_back(line);
+                    getNumbers(line, tmp);
+                    ligthToTemp.push_back(tmp);
                     break;
                 case 6:
-                    tempToHum.push_back(line);
+                    getNumbers(line, tmp);
+                    tempToHum.push_back(tmp);
                     break;
                 case 7:
-                    humToLocation.push_back(line);
+                    getNumbers(line, tmp);
+                    humToLocation.push_back(tmp);
                     break;
                 default:
                     break;
@@ -71,19 +80,59 @@ int main() {
 
     }
     else std::cout << "Unable to open file" << std::endl; 
+
+    for(std::vector<long int>::iterator it = seeds.begin() ; it != seeds.end(); ++it) {
+        long int seed = *it;
+        long int soil = converter(seed, seedToSoil);
+        long int fertilizer = converter(soil, soilToFert);
+        long int water = converter(fertilizer, fertToWater);
+        long int light = converter(water, waterToLight);
+        long int temperature = converter(light, ligthToTemp);
+        long int humidity = converter(temperature, tempToHum);
+        long int location = converter(humidity, humToLocation);
+
+        n = fmin(n, location);
+
+    }
     
-    std::cout << "SUM RESULT: " << counter << std::endl; 
+    std::cout << "SUM RESULT: " << n << std::endl; 
     
     return 0;
+}
+
+long int converter(long int seed, std::vector<std::vector<long int>> list) {
+    long int convertedNumber;
+
+    for(std::vector<std::vector<long int>>::iterator n = list.begin() ; n != list.end(); ++n) {
+        std::vector<long int> number = *n;
+        if(number[1] <= seed <= number[1]+(number[2]-1)) {
+            convertedNumber = number[0] + (seed - number[1]);
+            break;
+        }
+    }
+    if(!convertedNumber) convertedNumber = seed;
+    
+    return convertedNumber;
+}
+
+void getNumbers(std::string line, std::vector<long int>& numbers) {
+    std::vector<long int> tmp;
+    int posI = 0;
+    tmp.push_back(getDigit(line, posI, posI));
+    posI++;
+    tmp.push_back(getDigit(line, posI, posI));
+    posI++;
+    tmp.push_back(getDigit(line, posI, posI));
+
+    numbers = tmp;
 }
 
 int getSeeds(std::string st, std::vector<long int>& seeds) {
     if(st.find("seeds:") == 0) {
         std::string nStr = st.substr(7, st.length()-7);
-        std::cout << "-" << nStr << "-" << std::endl;
+        // std::cout << "-" << nStr << "-" << std::endl;
         for(int i=0; i<nStr.length(); ++i)
         {
-            // std::cout << getDigit(nStr, i, i) << std::endl;
             seeds.push_back(getDigit(nStr, i, i));
         }
     }
