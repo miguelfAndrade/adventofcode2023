@@ -101,16 +101,16 @@ int main() {
 }
 
 long int converter(long int seed, std::vector<std::vector<long int>> list) {
-    long int convertedNumber;
+    long int convertedNumber = -1;
 
     for(std::vector<std::vector<long int>>::iterator n = list.begin() ; n != list.end(); ++n) {
         std::vector<long int> number = *n;
-        if(number[1] <= seed <= number[1]+(number[2]-1)) {
+        if(number[1] <= seed && seed <= (number[1]+(number[2]-1))) {
             convertedNumber = number[0] + (seed - number[1]);
             break;
         }
     }
-    if(!convertedNumber) convertedNumber = seed;
+    if(convertedNumber == -1) convertedNumber = seed;
     
     return convertedNumber;
 }
