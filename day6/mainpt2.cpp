@@ -32,7 +32,6 @@ int main() {
     for (size_t j = 1; j < timeDist[0]; j++)
     {
         long int msLeft = timeDist[0] - j;
-        long int vel = j;
         long int distance = msLeft * j;
         if(distance > timeDist[1]) counter++;
     }
